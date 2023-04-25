@@ -1,5 +1,4 @@
 package com.librarysystem;
-
 import java.util.Scanner;
 
 public class Main {
@@ -25,6 +24,7 @@ public class Main {
         //Menu
         boolean exit = false;
         while (!exit) {
+            System.out.println("============================");
             System.out.println("Welcome to the Library!");
             System.out.println("\t1: Show Available Books");
             System.out.println("\t2. Show Checked Out Books");
@@ -38,22 +38,37 @@ public class Main {
                 case 1: //Show Available Books
                     System.out.println("Here is our current inventory:");
                     booksInInventory();
-                    System.out.println("");
+                    System.out.println(" ");
 
-                    System.out.print("Type ID# if the book that you wish to check out, or press 0 to exit. ");
+                    System.out.print("Press 1 to checkout a book or press 0 to exit. ");
                     int selection = input.nextInt();
-                    if (selection == 0){
-                        break;
-                    } else if (selection == bookShelf[selection].getId()){
-                        System.out.print("Enter your name here: ");
-                        String name = input.nextLine();
 
-                        bookShelf[selection].checkOut(name);
+                    if (selection == 1){
+                        checkingOutBook();
+                    } else if (selection == 0) {
+                        System.out.println("Returning to menu.");
+                        break;
                     } else {
-                        System.out.println("That is not available");
+                        System.out.println("Invalid Input, Please try again");
+                        break;
                     }
+
                     break;
                 case  2: // Show Checked out Books
+                    booksCheckedOut();
+
+                    System.out.print("Press 1 to check in a book, press 0 to exit:");
+                    int choice = input.nextInt();
+
+                    if (choice == 1){
+                        checkingInBook();
+                    } else if (choice == 0) {
+                        System.out.println("Returning to menu.");
+                        break;
+                    } else {
+                        System.out.println("Invalid Input, Please try again");
+                        break;
+                    }
                     break;
                 case 3: // Exit command
                     System.out.println("Thank you. Have a Good Day!");
@@ -66,13 +81,47 @@ public class Main {
         }
     }
     public static void booksInInventory(){
-        for (int i = 0; i < bookShelf.length; i++) {
-            if (!bookShelf[i].isCheckedOut()) {
-                System.out.println("ID: " + bookShelf[i].getId() + " || " + "ISBN: " + bookShelf[i].getIsbn() + " || " + "Title: " + bookShelf[i].getTitle());
+        for (Books books : bookShelf) {
+            if (!books.isCheckedOut()) {
+                System.out.println("ID: " + books.getId() + " || " + "ISBN: " + books.getIsbn() + " || " + "Title: " + books.getTitle());
             }
         }
     }
-    /*public static void checkOutSelection(){
-        if ()
-    }*/
+    public static void booksCheckedOut() {
+        System.out.println("Books currently checked out:");
+        for (Books books : bookShelf) {
+            if (books.isCheckedOut()) {
+                System.out.println("ID: " + books.getId() + " || ISBN: " + books.getIsbn() + " || Title: " + books.getTitle() + " || Checked Out to: " + books.getCheckedOutTo());
+            }
+        }
+        System.out.println(" ");
+    }
+
+    public static void checkingOutBook() {
+        System.out.print("Enter the book ID# you wish to check out: ");
+        int selectID = input.nextInt();
+
+        for (Books books : bookShelf) {
+            if(selectID == books.getId()) {
+                System.out.print("Please enter your name here: ");
+                String recipientName = input.nextLine();
+                input.nextLine();
+
+                books.checkOut(recipientName);
+            }
+        }
+    }
+    public static void checkingInBook() {
+        System.out.print("Enter the book ID# you wish to check out: ");
+        int selectID = input.nextInt();
+
+        for (Books books : bookShelf) {
+            if(selectID == books.getId()) {
+                System.out.println("Book Titled " + books.getTitle() + " (ID: " + books.getId() + ") Has been returned to the library.");
+                books.checkIn();
+            }
+        }
+    }
 }
+
+
